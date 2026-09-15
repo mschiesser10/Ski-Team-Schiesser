@@ -1,0 +1,871 @@
+<title>Ski Team Schiesser</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  href="https://fonts.googleapis.com/css2?family=Anton&family=Karla:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap"
+  rel="stylesheet">
+
+<style>
+  /* ============================================================
+     1) BARVY A PROMĚNNÉ (design tokeny)
+     Všechny barvy jsou definované jednou tady a používají se
+     přes var(--nazev) v celém CSS. Chceš jinou barevnou paletu?
+     Stačí přepsat hodnoty tady dole – zbytek stránky se přebarví sám.
+     ============================================================ */
+  :root {
+    --bg: #F4F8FA;
+    /* pozadí stránky – "denní sníh" */
+    --bg-soft: #E6EEF2;
+    /* lehce odlišené pozadí sekcí */
+    --card: #FFFFFF;
+    /* pozadí karet */
+    --text: #12222F;
+    /* hlavní text */
+    --text-soft: #46586B;
+    /* vedlejší / popisný text */
+    --accent: #1B4E74;
+    /* hlavní modrá – "sjezdovka" */
+    --accent-2: #2E6B94;
+    /* světlejší modrá, na hover */
+    --red: #C8433B;
+    /* červená jako závodní branka */
+    --gold: #C98A2C;
+    /* zlatá – jen na drobné zvýraznění */
+    --border: #D3DEE4;
+    --shadow: rgba(18, 34, 47, 0.12);
+  }
+
+  /* Tmavý režim – pokud má návštěvník v systému / prohlížeči
+     nastavený dark mode, a sám si výslovně nezvolil světlý. */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1B24;
+      --bg-soft: #16242E;
+      --card: #16262F;
+      --text: #EAF1F5;
+      --text-soft: #A9BCC8;
+      --accent: #74B6E0;
+      --accent-2: #4A93C2;
+      --red: #E8695F;
+      --gold: #E3B564;
+      --border: rgba(255, 255, 255, 0.14);
+      --shadow: rgba(0, 0, 0, 0.45);
+    }
+  }
+
+  /* Kdyby sis do stránky později přidal/a přepínač světlý/tmavý режим
+     rukou (např. tlačítkem, které nastaví data-theme="dark" na <html>),
+     tenhle blok to respektuje i proti systémovému nastavení. */
+  :root[data-theme="dark"] {
+    --bg: #0F1B24;
+    --bg-soft: #16242E;
+    --card: #16262F;
+    --text: #EAF1F5;
+    --text-soft: #A9BCC8;
+    --accent: #74B6E0;
+    --accent-2: #4A93C2;
+    --red: #E8695F;
+    --gold: #E3B564;
+    --border: rgba(255, 255, 255, 0.14);
+    --shadow: rgba(0, 0, 0, 0.45);
+  }
+
+  /* ============================================================
+     2) ZÁKLADNÍ RESET A TYPOGRAFIE
+     ============================================================ */
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Karla", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: "Anton", "Karla", sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--text);
+  }
+
+  p {
+    margin: 0 0 1em;
+    color: var(--text-soft);
+    max-width: 38em;
+  }
+
+  a {
+    color: var(--accent);
+  }
+
+  .mono {
+    font-family: "JetBrains Mono", monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+
+  section {
+    scroll-margin-top: 76px;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  /* ============================================================
+     3) HORNÍ NAVIGACE (sticky lišta, styl "výsledková tabule")
+     ============================================================ */
+  header.nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: "Anton", sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .brand svg {
+    flex: none;
+  }
+
+  nav.links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav.links a {
+    text-decoration: none;
+    color: var(--text-soft);
+    font-weight: 700;
+    font-size: 0.92rem;
+    letter-spacing: 0.02em;
+    padding: 6px 2px;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  nav.links a:hover,
+  nav.links a:focus-visible {
+    color: var(--text);
+    border-bottom-color: var(--red);
+  }
+
+  .burger {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .burger span,
+  .burger span::before,
+  .burger span::after {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--text);
+    position: relative;
+    transition: transform 0.2s;
+  }
+
+  .burger span::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+  }
+
+  .burger span::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+  }
+
+  @media (max-width: 720px) {
+    .burger {
+      display: flex;
+    }
+
+    nav.links {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-direction: column;
+      gap: 0;
+      padding: 8px 0;
+      display: none;
+    }
+
+    nav.links.open {
+      display: flex;
+    }
+
+    nav.links a {
+      padding: 12px 24px;
+      width: 100%;
+    }
+  }
+
+  /* ============================================================
+     4) HERO (úvodní sekce) – pruhy jako slalomové branky
+     ============================================================ */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 88px 0 72px;
+    background: var(--bg-soft);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: -20% -10%;
+    background: repeating-linear-gradient(65deg,
+        var(--accent) 0 26px,
+        transparent 26px 64px,
+        var(--red) 64px 90px,
+        transparent 90px 128px);
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    position: relative;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.6rem, 7vw, 5rem);
+    line-height: 0.98;
+    margin: 10px 0 18px;
+  }
+
+  .hero .tagline {
+    font-size: 1.15rem;
+    max-width: 34em;
+  }
+
+  .hero .cta-row {
+    display: flex;
+    gap: 14px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    padding: 12px 22px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    transition: transform 0.12s, background 0.15s;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-2);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 36px;
+    flex-wrap: wrap;
+    margin-top: 46px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .stat .num {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--accent);
+  }
+
+  .stat .label {
+    font-size: 0.8rem;
+    color: var(--text-soft);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ============================================================
+     5) OBECNÝ NÁHLAVEK SEKCE
+     ============================================================ */
+  .section {
+    padding: 72px 0;
+  }
+
+  .section-head {
+    margin-bottom: 40px;
+    max-width: 46em;
+  }
+
+  .section-head h2 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin-top: 8px;
+  }
+
+  /* ============================================================
+     6) HISTORIE – časová osa
+     ============================================================ */
+  .timeline {
+    position: relative;
+    padding-left: 28px;
+  }
+
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .tl-item {
+    position: relative;
+    padding-bottom: 34px;
+  }
+
+  .tl-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .tl-item::before {
+    content: "";
+    position: absolute;
+    left: -28px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--red);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--red);
+  }
+
+  .tl-year {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    color: var(--red);
+    font-size: 0.95rem;
+  }
+
+  .tl-item h3 {
+    font-size: 1.2rem;
+    margin: 4px 0 6px;
+    font-family: "Karla", sans-serif;
+    font-weight: 700;
+  }
+
+  /* ============================================================
+     7) ČLENOVÉ TÝMU – karty se startovními čísly
+     ============================================================ */
+  .grid-members {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 22px;
+  }
+
+  .member-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px -14px var(--shadow);
+  }
+
+  .member-photo {
+    position: relative;
+    aspect-ratio: 4/5;
+    background:
+      linear-gradient(160deg, var(--accent) 0%, var(--accent-2) 100%);
+    display: flex;
+    align-items: flex-end;
+    padding: 14px;
+  }
+
+  .bib {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #fff;
+    color: var(--accent);
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 4px 9px;
+    border-radius: 6px;
+  }
+
+  .member-photo .placeholder-label {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+  }
+
+  .member-info {
+    padding: 16px;
+  }
+
+  .member-info h3 {
+    font-family: "Karla", sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .member-info .role {
+    color: var(--red);
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin: 4px 0 8px;
+  }
+
+  .member-info .pb {
+    font-size: 0.82rem;
+    color: var(--text-soft);
+  }
+
+  /* ============================================================
+     8) GALERIE – mřížka fotek/videí
+     ============================================================ */
+  .grid-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    grid-auto-rows: 160px;
+  }
+
+  .g-tile {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(150deg, var(--bg-soft), var(--border));
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-soft);
+    font-size: 0.78rem;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .g-tile.tall {
+    grid-row: span 2;
+  }
+
+  .g-tile.wide {
+    grid-column: span 2;
+  }
+
+  .g-tile .play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ============================================================
+     9) KONTAKT
+     ============================================================ */
+  .contact-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .pill-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 9px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 40px;
+    color: var(--text-soft);
+    font-size: 0.85rem;
+  }
+
+  footer .wrap {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+</style>
+
+<!-- ============================================================
+     NAVIGACE
+     ============================================================ -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+        <circle cx="15" cy="15" r="14" fill="none" stroke="var(--red)" stroke-width="2" />
+        <line x1="7" y1="20" x2="15" y2="9" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" />
+        <line x1="13" y1="20" x2="21" y2="9" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" />
+      </svg>
+      Sněhová Sebranka
+    </a>
+    <button class="burger" id="burgerBtn" aria-label="Otevřít menu" aria-expanded="false">
+      <span></span>
+    </button>
+    <nav>
+      <ul class="links" id="navLinks">
+        <li><a href="#domu">Domů</a></li>
+        <li><a href="#historie">Historie</a></li>
+        <li><a href="#clenove">Členové</a></li>
+        <li><a href="#galerie">Galerie</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================================================
+     HERO / ÚVOD
+     ============================================================ -->
+<section id="domu" class="hero">
+  <div class="wrap hero-inner">
+    <div class="eyebrow">Rodinný závodní tým · založeno 2016</div>
+    <h1>Sněhová<br>Sebranka</h1>
+    <p class="tagline">
+      Nejsme skuteční závodníci. Máme ale opravdové dresy, vlastní
+      startovní čísla a naprosto seriózní tabulku výsledků, kterou si
+      každý rok trochu poupravíme, ať v ní vyhrává jiný bratranec.
+    </p>
+    <div class="cta-row">
+      <a href="#clenove" class="btn btn-primary">Poznat tým</a>
+      <a href="#galerie" class="btn btn-ghost">Fotky a videa</a>
+    </div>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="num mono">9</div>
+        <div class="label">Sezón na sněhu</div>
+      </div>
+      <div class="stat">
+        <div class="num mono">6</div>
+        <div class="label">Členů týmu</div>
+      </div>
+      <div class="stat">
+        <div class="num mono">0</div>
+        <div class="label">Vyhraných medailí</div>
+      </div>
+      <div class="stat">
+        <div class="num mono">100&nbsp;%</div>
+        <div class="label">Zábavy na trati</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HISTORIE
+     ============================================================ -->
+<section id="historie" class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Jak to všechno začalo</div>
+      <h2>Historie týmu</h2>
+      <p>Krátká, hrdá a lehce nepřesná kronika Sněhové Sebranky – klidně
+        si roky a historky přepiš na ty skutečné.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-year">2016</div>
+        <h3>Založení týmu</h3>
+        <p>Vzniklo na chatě po třetím svařáku jako vtip. Vtip přežil,
+          svařák ne.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2018</div>
+        <h3>První společný sjezd</h3>
+        <p>Nikdo si nic nezlomil. Dosud nepřekonaný rekord týmu.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2021</div>
+        <h3>Vlastní dresy se startovními čísly</h3>
+        <p>Od té doby to bereme minimálně o 10&nbsp;% profesionálněji.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2023</div>
+        <h3>Vznik týmové hymny</h3>
+        <p>Zpívá se hlavně na vleku a nikdy celá, protože ji nikdo neumí.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2026</div>
+        <h3>Tenhle web</h3>
+        <p>Konečně místo, kam můžeme dát fotky, aniž by je viděla celá rodina najednou ve WhatsApp skupině.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ČLENOVÉ TÝMU
+     ============================================================ -->
+<section id="clenove" class="section"
+  style="background:var(--bg-soft); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Startovní listina</div>
+      <h2>Členové týmu</h2>
+      <p>Šest jmen, šest specializací, žádný skutečný trénink. Foto
+        u každého člena je jen zástupný obrázek – nahraď ho reálnou
+        fotkou (viz vysvětlení pod kódem).</p>
+    </div>
+    <div class="grid-members">
+
+      <div class="member-card">
+        <div class="member-photo">
+          <span class="bib">01</span>
+          <span class="placeholder-label">foto: jméno.jpg</span>
+        </div>
+        <div class="member-info">
+          <h3>Jméno Příjmení</h3>
+          <div class="role">Specialistka na sněhové anděly</div>
+          <p class="pb mono">OB: 14:32,7&nbsp;· na 50&nbsp;m</p>
+        </div>
+      </div>
+
+      <div class="member-card">
+        <div class="member-photo">
+          <span class="bib">02</span>
+          <span class="placeholder-label">foto: jméno.jpg</span>
+        </div>
+        <div class="member-info">
+          <h3>Jméno Příjmení</h3>
+          <div class="role">Král zapadání do závěje</div>
+          <p class="pb mono">OB: 12:08,1&nbsp;· na 50&nbsp;m</p>
+        </div>
+      </div>
+
+      <div class="member-card">
+        <div class="member-photo">
+          <span class="bib">03</span>
+          <span class="placeholder-label">foto: jméno.jpg</span>
+        </div>
+        <div class="member-info">
+          <h3>Jméno Příjmení</h3>
+          <div class="role">Mistr ztracených holí</div>
+          <p class="pb mono">OB: 15:47,3&nbsp;· na 50&nbsp;m</p>
+        </div>
+      </div>
+
+      <div class="member-card">
+        <div class="member-photo">
+          <span class="bib">04</span>
+          <span class="placeholder-label">foto: jméno.jpg</span>
+        </div>
+        <div class="member-info">
+          <h3>Jméno Příjmení</h3>
+          <div class="role">Šampionka teplého čaje na trati</div>
+          <p class="pb mono">OB: 11:55,9&nbsp;· na 50&nbsp;m</p>
+        </div>
+      </div>
+
+      <div class="member-card">
+        <div class="member-photo">
+          <span class="bib">05</span>
+          <span class="placeholder-label">foto: jméno.jpg</span>
+        </div>
+        <div class="member-info">
+          <h3>Jméno Příjmení</h3>
+          <div class="role">Věčný poslední, věčně s úsměvem</div>
+          <p class="pb mono">OB: 19:03,4&nbsp;· na 50&nbsp;m</p>
+        </div>
+      </div>
+
+      <div class="member-card">
+        <div class="member-photo">
+          <span class="bib">06</span>
+          <span class="placeholder-label">foto: jméno.jpg</span>
+        </div>
+        <div class="member-info">
+          <h3>Jméno Příjmení</h3>
+          <div class="role">Trenér, který nikdy nejel na lyžích</div>
+          <p class="pb mono">OB: —</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     GALERIE
+     ============================================================ -->
+<section id="galerie" class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Důkazní materiál</div>
+      <h2>Galerie</h2>
+      <p>Zatím jen zástupné dlaždice. Jak nahradit fotkou nebo videem
+        je popsané v textu pod kódem.</p>
+    </div>
+    <div class="grid-gallery">
+      <div class="g-tile wide">foto: sezona-2023-start.jpg</div>
+      <div class="g-tile">foto: trenink-vlek.jpg</div>
+      <div class="g-tile tall">foto: apres-ski.jpg</div>
+      <div class="g-tile">foto: dresy.jpg</div>
+      <div class="g-tile">
+        <div class="play">▶</div>
+        video: sjezd-2024.mp4
+      </div>
+      <div class="g-tile wide">foto: cela-rodina.jpg</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     KONTAKT
+     ============================================================ -->
+<section id="kontakt" class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Přihlášky (žertem)</div>
+      <h2>Kontakt</h2>
+    </div>
+    <div class="contact-box">
+      <div>
+        <h3 style="font-family:'Karla',sans-serif; font-weight:700; font-size:1.1rem;">
+          Chceš k nám na trať?
+        </h3>
+        <p style="margin-top:6px;">Napiš nám, přihlaste se na příští sraz, nebo nám jen pošli lepší vtip o lyžování.</p>
+      </div>
+      <div class="pill-row">
+        <a class="pill" href="mailto:tym@example.cz">tym@example.cz</a>
+        <a class="pill" href="#">Instagram</a>
+        <a class="pill" href="#">Facebook</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Sněhová Sebranka</span>
+    <span>Vytvořeno s láskou a nadměrným množstvím svařáku.</span>
+  </div>
+</footer>
+
+<script>
+  // Mobilní menu: klik na "hamburger" přepne třídu "open" na navigaci.
+  const burgerBtn = document.getElementById('burgerBtn');
+  const navLinks = document.getElementById('navLinks');
+  burgerBtn.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    burgerBtn.setAttribute('aria-expanded', String(isOpen));
+  });
+  // Po kliknutí na libovolný odkaz v menu se mobilní menu zase zavře.
+  navLinks.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+</script>
